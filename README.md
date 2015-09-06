@@ -2,6 +2,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/lita-docker.png)](http://badge.fury.io/rb/lita-docker)
 [![Build Status](https://travis-ci.org/funkymonkeymonk/lita-docker.png?branch=master)](https://travis-ci.org/funkymonkeymonk/lita-docker)
+[![Coverage Status](https://coveralls.io/repos/funkymonkeymonk/lita-docker/badge.svg?branch=master&service=github)](https://coveralls.io/github/funkymonkeymonk/lita-docker?branch=master)
 
 **lita-docker** is an handler for [Lita](https://www.lita.io/) that allows you to issue docker commands from Lita.
 

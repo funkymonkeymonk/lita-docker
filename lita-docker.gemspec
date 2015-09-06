@@ -15,6 +15,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "lita", ">= 4.6.0"
+  spec.add_runtime_dependency "docker-api"
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "pry-byebug"
@@ -23,4 +24,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", ">= 3.0.0"
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "coveralls"
+  spec.add_development_dependency "guard-rspec"
 end
