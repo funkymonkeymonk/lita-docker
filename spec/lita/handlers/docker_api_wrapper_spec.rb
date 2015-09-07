@@ -4,13 +4,13 @@ describe DockerApiWrapper do
   describe "#list" do
     context "with no hosts stored" do
       it "responds with no hosts attached" do
-        pending
+        skip
       end
     end
 
     context "with hosts connected" do
       it "responds with the name of each host attached" do
-        pending
+        skip
       end
     end
   end
