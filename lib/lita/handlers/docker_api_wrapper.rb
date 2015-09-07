@@ -1,5 +1,10 @@
+require 'docker'
+
 class DockerApiWrapper
+  hosts = []
+
   def add_host(host_name, host_address)
+    
   end
 
   def list_hosts

@@ -48,7 +48,12 @@ module Lita
       end
 
       def list_images(response)
-        host_list = @@docker.list_hosts
+        if response.args.length >= 2 then
+          host_list = [response.args[1]]
+        else
+          host_list = @@docker.list_hosts
+        end
+
         if host_list.empty? then
           response.reply 'No Docker hosts connected.'
         else
@@ -67,7 +72,12 @@ module Lita
       end
 
       def list_containers(response)
-        host_list = @@docker.list_hosts
+        if response.args.length >= 2 then
+          host_list = [response.args[1]]
+        else
+          host_list = @@docker.list_hosts
+        end
+
         if host_list.empty? then
           response.reply 'No Docker hosts connected.'
         else

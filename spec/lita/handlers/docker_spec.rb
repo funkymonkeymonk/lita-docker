@@ -28,7 +28,7 @@ describe Lita::Handlers::Docker, lita_handler: true do
         host_address = 'tcp://192.168.99.100:2376'
         expect_any_instance_of(DockerApiWrapper).to receive(:add_host).and_return(true)
         send_command("docker add host #{host_name} #{host_address}")
-        expect(replies.last).to match(/Host #{host_name} added\./)
+        expect(replies.last).to eq("Host #{host_name} added.")
       end
     end
 
@@ -38,7 +38,7 @@ describe Lita::Handlers::Docker, lita_handler: true do
         host_address = 'tcp://192.168.99.100:2376'
         expect_any_instance_of(DockerApiWrapper).to receive(:add_host).and_return(false)
         send_command("docker add host #{host_name} #{host_address}")
-        expect(replies.last).to match(/Failed to add host #{host_name}\./)
+        expect(replies.last).to eq("Failed to add host #{host_name}.")
       end
     end
   end
@@ -49,7 +49,7 @@ describe Lita::Handlers::Docker, lita_handler: true do
       it "responds with no hosts attached" do
         expect_any_instance_of(DockerApiWrapper).to receive(:list_hosts).and_return(hosts)
         send_command("docker hosts")
-        expect(replies.last).to match(/No Docker hosts connected\./)
+        expect(replies.last).to eq('No Docker hosts connected.')
       end
     end
 
@@ -57,7 +57,7 @@ describe Lita::Handlers::Docker, lita_handler: true do
       it "responds with no hosts attached" do
         expect_any_instance_of(DockerApiWrapper).to receive(:list_hosts).and_return(hosts)
         send_command("docker images")
-        expect(replies.last).to match(/No Docker hosts connected\./)
+        expect(replies.last).to eq('No Docker hosts connected.')
       end
     end
 
@@ -65,7 +65,7 @@ describe Lita::Handlers::Docker, lita_handler: true do
       it "responds with no hosts attached" do
         expect_any_instance_of(DockerApiWrapper).to receive(:list_hosts).and_return(hosts)
         send_command("docker containers")
-        expect(replies.last).to match(/No Docker hosts connected\./)
+        expect(replies.last).to eq('No Docker hosts connected.')
       end
     end
   end
@@ -76,42 +76,60 @@ describe Lita::Handlers::Docker, lita_handler: true do
       it "responds with the name of each host attached" do
         expect_any_instance_of(DockerApiWrapper).to receive(:list_hosts).and_return(hosts)
         send_command("docker hosts")
-        expect(replies.last).to match(hosts.join("\n"))
+        expect(replies.last).to eq(hosts.join("\n"))
       end
     end
 
     describe "#list_images" do
-      it "responds with a list of images on each host" do
-        result1 = ['image1', 'image2']
-        result2 = []
-        result3 = ['image3']
+      let(:result1) {['image1', 'image2']}
+      let(:result2) {[]}
+      let(:result3) {['image3']}
 
+      it "responds with a list of images on each host" do
         allow_any_instance_of(DockerApiWrapper).to receive(:list_hosts).and_return(hosts)
         allow_any_instance_of(DockerApiWrapper).to receive(:list_images).and_return(result1, result2, result3)
 
         send_command("docker images")
-        expect(replies.last).to match("test_host_1\n" +
+        expect(replies.last).to eq("test_host_1\n" +
                                       " • image1\n" +
                                       " • image2\n" +
                                       "test_host_3\n"+
                                       " • image3")
       end
+
+      it "responds with a list of images on a single host" do
+        allow_any_instance_of(DockerApiWrapper).to receive(:list_hosts).and_return(hosts)
+        allow_any_instance_of(DockerApiWrapper).to receive(:list_images).and_return(result3)
+
+        send_command("docker images test_host_3")
+        expect(replies.last).to eq("test_host_3\n"+
+                                      " • image3")
+      end
     end
 
     describe "#list_containers" do
-      it "responds with running containers on each host" do
-        result1 = ['org/container1', 'container2']
-        result2 = []
-        result3 = ['org2/container3']
+      let(:result1) { ['org/container1', 'container2'] }
+      let(:result2) { [] }
+      let(:result3) { ['org2/container3'] }
 
+      it "responds with running containers on each host" do
         allow_any_instance_of(DockerApiWrapper).to receive(:list_hosts).and_return(hosts)
         allow_any_instance_of(DockerApiWrapper).to receive(:list_containers).and_return(result1, result2, result3)
 
         send_command("docker ps")
-        expect(replies.last).to match("test_host_1\n" +
+        expect(replies.last).to eq("test_host_1\n" +
                                       " • org/container1\n" +
                                       " • container2\n" +
                                       "test_host_3\n"+
+                                      " • org2/container3")
+      end
+
+      it "responds with running containers on a single host" do
+        allow_any_instance_of(DockerApiWrapper).to receive(:list_hosts).and_return(hosts)
+        allow_any_instance_of(DockerApiWrapper).to receive(:list_containers).and_return(result3)
+
+        send_command("docker ps test_host_3")
+        expect(replies.last).to eq("test_host_3\n"+
                                       " • org2/container3")
       end
     end
